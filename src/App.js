@@ -20,51 +20,43 @@ const list = [
 ];
 
 //definition of App component
-function App() {
-  return (
-    <div>
-      <h1>My Hacker Stories</h1>
+const App = () => (
+  <div>
+    <h1>My Hacker Stories</h1>
 
-      <Search />
+    <Search />
 
-      <hr />
+    <hr />
 
-      {/*creating an instance of List component */}
-      <List />
-      {/*creating another instance of List component */}
-      <List />
-    </div>
-  );
-}
+    {/*creating an instance of List component */}
+    <List />
+    {/*creating another instance of List component */}
+    <List />
+  </div>
+);
 
-function Search() {
-  return (
-    <div>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
-    </div>
-  )
-}
+const Search = () => (
+  <div>
+    <label htmlFor="search">Search: </label>
+    <input id="search" type="text" />
+  </div>
+);
 
 //definition of List component
-function List() {
-  return (
-    <ul>
-      {list.map(function (item) {
-        return (
-          <li key={item.objectID}>
-            <span>
-              <a href={item.url}>{item.tetli}</a>
-            </span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
+const List = () => (
+  <ul>
+    {list.map((item) => (
+      <li key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.tetli}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+      </li>
+    ))}
+  </ul>
+);
 
 export default App;
 

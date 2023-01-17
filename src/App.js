@@ -64,32 +64,31 @@ const App = () => {
     {data: [], isLoading: false, isError: false}
   );
 
-    const handleFetchStories = React.useCallback(() => {
-      dispatchStories({type: 'STORIES_FETCH_INIT'});
+  const handleFetchStories = React.useCallback(async () => {
+    dispatchStories({type: 'STORIES_FETCH_INIT'});
 
-      axios
-        .get(url) 
-        .then((result) => {
-          dispatchStories({
-            type: 'STORIES_FETCH_SUCCESS',
-            payload: result.data.hits,
-          });
-        })
-        .catch(() =>
-          dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
-        );
-      }, [url]);
+    try {
+      const result = await axios.get(url);
 
-    React.useEffect(() => {
-      handleFetchStories();
-    }, [handleFetchStories]);
-
-    const handleRemoveStory= (item) => {
       dispatchStories({
-        type: 'REMOVE_STORY',
-        payload: item,
+        type: 'STORIES_FETCH_SUCCESS',
+        payload: result.data.hits,
       });
-    };
+    } catch {
+      dispatchStories({type: 'STORIES_FETCH_FAILURE'});
+    }
+    }, [url]);
+
+  React.useEffect(() => {
+    handleFetchStories();
+  }, [handleFetchStories]);
+
+  const handleRemoveStory= (item) => {
+    dispatchStories({
+      type: 'REMOVE_STORY',
+      payload: item,
+    });
+  };
 
   const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);

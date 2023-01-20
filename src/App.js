@@ -1,7 +1,8 @@
 import * as React from 'react';
 import axios from 'axios';
 
-import './App.css';
+import styles from './App.module.css';
+import cs from 'classnames';
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
@@ -55,7 +56,7 @@ const SearchForm = ({
   onSearchInput,
   onSearchSubmit,
 }) => (
-  <form onSubmit={onSearchSubmit} className='search-form'>
+  <form onSubmit={onSearchSubmit} className={styles.searchForm}>
     <InputWithLabel
       id='search'
       value={searchTerm}
@@ -68,7 +69,7 @@ const SearchForm = ({
     <button 
       type='submit' 
       disabled={!searchTerm}
-      className='button button_large'
+      className={cs(styles.button, styles.buttonLarge)}
     >
       Submit
     </button>
@@ -128,8 +129,8 @@ const App = () => {
   };
   
   return (
-    <div className='container'>
-      <h1 className='headline-primary'>My Hacker Stories</h1>
+    <div className={styles.container}>
+      <h1 className={styles.headlinePrimary       }>My Hacker Stories</h1>
 
       <SearchForm
         searchTerm={searchTerm}
@@ -167,7 +168,7 @@ const InputWithLabel = ({
 
   return (
     <>
-      <label htmlFor={id} className='label'>
+      <label htmlFor={id} className={styles.label}>
         {children}
       </label>
       &nbsp;
@@ -177,7 +178,7 @@ const InputWithLabel = ({
         type={type} 
         value={value}
         onChange={onInputChange} 
-        className='input'
+        className={styles.input}
       />
     </>
   );
@@ -197,7 +198,7 @@ const List = ({list, onRemoveItem}) => (
 );
 
 const Item = ({item, onRemoveItem}) => (
-  <li className='item'>
+  <li className={styles.item}>
     <span style={{width: '40%'}}>
       <a href={item.url}>{item.title}</a>
     </span>
@@ -208,7 +209,7 @@ const Item = ({item, onRemoveItem}) => (
       <button 
         type="button" 
         onClick={() => onRemoveItem(item)}
-        className='button button_small'
+        className={`${styles.button} ${styles.buttonSmall}`}
       >
         Dismiss
       </button>

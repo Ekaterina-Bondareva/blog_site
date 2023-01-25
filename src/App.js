@@ -83,6 +83,15 @@ const SearchForm = ({
   </form>
 );
 
+const getSumComments = (stories) => {
+  console.log('C');
+
+  return stories.data.reduce(
+    (result, value) => result + value.num_comments,
+    0
+  );
+}
+
 //definition of App component
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
@@ -136,10 +145,14 @@ const App = () => {
   };
 
   console.log('B:App');
+
+  const sumComments = React.useMemo(() => getSumComments(stories), [
+    stories,
+  ]);
   
   return (
     <div className='container'>
-      <h1 className='headline-primary'>My Hacker Stories</h1>
+      <h1 className='headline-primary'>My Hacker Stories with {sumComments} comments.</h1>
 
       <SearchForm
         searchTerm={searchTerm}

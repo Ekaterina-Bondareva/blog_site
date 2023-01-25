@@ -118,12 +118,12 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleRemoveStory= (item) => {
+  const handleRemoveStory= React.useCallback((item) => {
     dispatchStories({
       type: 'REMOVE_STORY',
       payload: item,
     });
-  };
+  }, []);
 
   const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
@@ -134,6 +134,8 @@ const App = () => {
 
     event.preventDefault();
   };
+
+  console.log('B:App');
   
   return (
     <div className='container'>
@@ -192,17 +194,20 @@ const InputWithLabel = ({
 };
 
 //definition of List component
-const List = ({list, onRemoveItem}) => (
-  <ul>
-    {list.map((item) => (
-      <Item 
-        key={item.objectID}
-        item={item} 
-        onRemoveItem={onRemoveItem}
-      />
-    ))}
-  </ul>
-);
+const List = React.memo(
+({list, onRemoveItem}) => (
+  console.log('B:List') || (
+    <ul>
+      {list.map((item) => (
+        <Item 
+          key={item.objectID}
+          item={item} 
+          onRemoveItem={onRemoveItem}
+        />
+      ))}
+    </ul>
+  )
+));
 
 const Item = ({item, onRemoveItem}) => (
   <li className='item'>

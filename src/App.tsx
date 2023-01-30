@@ -137,7 +137,7 @@ const SearchForm = ({
   </form>
 );
 
-const getSumComments = (stories) => {
+const getSumComments = (stories: {data: Stories, isLoading: boolean, isError: boolean}) => {
   console.log('C');
 
   return stories.data.reduce(
@@ -195,7 +195,7 @@ const App = () => {
   };
 
   const handleSearchSubmit = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.FormEvent<HTMLFormElement>
   ) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
 
@@ -281,7 +281,7 @@ type ListProps = {
 //definition of List component
 const List = React.memo(
 ({list, onRemoveItem}: ListProps) => (
-  console.log('B:List') || (
+  (
     <ul>
       {list.map((item) => (
         <Item 

@@ -32,7 +32,6 @@ const useSemiPersistentState = (
     if (!isMounted.current) {
       isMounted.current = true;
     } else {
-      console.log('A');
       localStorage.setItem(key, value);
     }
   }, [value, key]);
@@ -138,8 +137,6 @@ const SearchForm = ({
 );
 
 const getSumComments = (stories: {data: Stories, isLoading: boolean, isError: boolean}) => {
-  console.log('C');
-
   return stories.data.reduce(
     (result, value) => result + value.num_comments,
     0
@@ -167,13 +164,12 @@ const App = () => {
 
     try {
       const result = await axios.get(url);
-
       dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
         payload: result.data.hits,
       });
     } catch {
-      dispatchStories({type: 'STORIES_FETCH_FAILURE'});
+      dispatchStories( {type: 'STORIES_FETCH_FAILURE'});
     }
     }, [url]);
 
@@ -202,12 +198,10 @@ const App = () => {
     event.preventDefault();
   };
 
-  console.log('B:App');
-
   const sumComments = React.useMemo(() => getSumComments(stories), [
     stories,
   ]);
-  
+
   return (
     <div className='container'>
       <h1 className='headline-primary'>My Hacker Stories with {sumComments} comments.</h1>

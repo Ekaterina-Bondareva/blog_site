@@ -1,6 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
-import { sortBy } from 'lodash';
+import { replace, result, sortBy } from 'lodash';
 
 import './App.css';
 import { ReactComponent as Check } from './check.svg';
@@ -77,6 +77,30 @@ const SearchForm = ({
   </form>
 );
 
+const extractSearchTerm = (url) => url.replace(API_ENDPOINT, '');
+
+const getLastSearches = (urls) => 
+  urls
+    .reduce((result, url, index) => {
+      const searchTerm = extractSearchTerm(url);
+
+      if (index === 0) {
+        return result.concat(searchTerm);
+      }
+
+      const previousSearchTerm = result[result.length - 1];
+
+      if (searchTerm === previousSearchTerm) {
+        return result;
+      } else {
+        return result.concat(searchTerm);
+      }
+    }, [])
+    .slice(-6)
+    .slice(0, -1);
+
+const getUrl = (searchTerm) => `${API_ENDPOINT}${searchTerm}`;
+
 //definition of App component
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
@@ -84,9 +108,7 @@ const App = () => {
     'React'
   );
 
-  const [url, setUrl] = React.useState(
-    `${API_ENDPOINT}${searchTerm}`
-  );
+  const [urls, setUrls] = React.useState([getUrl(searchTerm)]);
 
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
@@ -97,7 +119,8 @@ const App = () => {
     dispatchStories({type: 'STORIES_FETCH_INIT'});
 
     try {
-      const result = await axios.get(url);
+      const lastUrl = urls[urls.length - 1];
+      const result = await axios.get(lastUrl);
 
       dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
@@ -106,7 +129,7 @@ const App = () => {
     } catch {
       dispatchStories({type: 'STORIES_FETCH_FAILURE'});
     }
-    }, [url]);
+    }, [urls]);
 
   React.useEffect(() => {
     handleFetchStories();
@@ -124,10 +147,23 @@ const App = () => {
   };
 
   const handleSearchSubmit = (event) => {
-    setUrl(`${API_ENDPOINT}${searchTerm}`);
+    handleSearch(searchTerm);
 
     event.preventDefault();
   };
+
+  const handleLastSearch = (searchTerm) => {
+  setSearchTerm(searchTerm);
+
+    handleSearch(searchTerm);
+  };
+
+  const handleSearch = (searchTerm) => {
+    const url = getUrl(searchTerm);
+    setUrls(urls.concat(url));
+  };
+
+  const lastSearches = getLastSearches(urls);
   
   return (
     <div className='container'>
@@ -137,6 +173,11 @@ const App = () => {
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
         onSearchSubmit={handleSearchSubmit}
+      />
+
+      <LastSearches
+        lastSearches={lastSearches}
+        onLastSearch={handleLastSearch}
       />
 
       {stories.isError && <p>Something went wrong...</p>}
@@ -150,6 +191,22 @@ const App = () => {
     </div>
   );
 };
+
+const LastSearches = ({lastSearches, onLastSearch}) => (
+  <>
+    {lastSearches.map((searchTerm, index) => (
+      <button
+        key={searchTerm + index}
+        type="button"
+        onClick={() => onLastSearch(searchTerm)}
+      >
+        {searchTerm}
+      </button>
+    ))}
+  </>
+);
+
+
 
 const InputWithLabel = ({
   id, 
